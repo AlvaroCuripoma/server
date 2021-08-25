@@ -129,6 +129,7 @@ class ClienteController extends Controller
         if ($user != null && $user->clave == $request->pass) {
             return response()->json(cliente::where('correo','=',$request->correo)
                 ->select(
+                    'id',
                     'rol_fk',
                     'nombres',
                     'apellidos',
