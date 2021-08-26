@@ -77,6 +77,7 @@ class RolController extends Controller
      */
     public function update(Request $request, $id)
     {
+        echo $request;
         $rol = rol::findOrFail($id);
         $rol->visible = $request->visible;
         $rol->estado = $request->estado;

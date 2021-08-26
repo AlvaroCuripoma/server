@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\tipo_producto;
 use App\Models\producto;
 use Illuminate\Http\Request;
 
@@ -15,6 +16,15 @@ class ProductoController extends Controller
     public function index()
     {
         $productos = producto::all();
+        $tipos_productos = tipo_producto::all();
+        foreach ($productos as $producto) {
+            $tipo_producto = tipo_producto::where(
+                'id','=',$producto->tipo_producto_fk)
+            ->select('nombre')
+            ->get()
+            ->first();
+            $producto->tipo_producto_fk = $tipo_producto->nombre;
+        }
         return response()->json($productos);
     }
 
@@ -36,19 +46,27 @@ class ProductoController extends Controller
      */
     public function store(Request $request)
     {
-        $producto = new producto();
-        $producto->visible = $request->visible;
-        $producto->estado = $request->estado;
-        $producto->tipo_producto_fk = $request->tipo_producto_fk;
-        $producto->nombre = $request->nombre;
-        $producto->fecha_fabricacion = $request->fecha_fabricacion;
-        $producto->fecha_vencimiento = $request->fecha_vencimiento;
-        $producto->precio = $request->precio;
-        $producto->cantidad = $request->cantidad;
-        $producto->descripcion = $request->descripcion;
-        if ($producto->save()) {
-            return response()->json($producto);
-        }
+        $tipo_producto_fk = tipo_producto::where(
+            'nombre','=',$request->tipo_producto_fk_nombre)
+            ->select('id')
+            ->get()
+            ->first();
+        if ($tipo_producto_fk) {
+            $producto = new producto();
+            $producto->visible = $request->visible;
+            $producto->estado = $request->estado;
+            $producto->tipo_producto_fk = $tipo_producto_fk->id;
+            $producto->nombre = $request->nombre;
+            $producto->fecha_fabricacion = $request->fecha_fabricacion;
+            $producto->fecha_vencimiento = $request->fecha_vencimiento;
+            $producto->precio = $request->precio;
+            $producto->cantidad = $request->cantidad;
+            $producto->descripcion = $request->descripcion;
+            if ($producto->save()) {
+                return response()->json($producto);
+            }
+        } 
+    
     }
 
     /**
@@ -60,6 +78,15 @@ class ProductoController extends Controller
     public function show($id)
     {
         $producto = producto::findOrFail($id);
+        $tipos_productos = tipo_producto::all();
+
+        $tipo_producto = tipo_producto::where(
+            'id','=',$producto->tipo_producto_fk)
+            ->select('nombre')
+            ->get()
+            ->first();
+        $producto->tipo_producto_fk = $tipo_producto->nombre;
+        
         return response()->json($producto);
     }
 
