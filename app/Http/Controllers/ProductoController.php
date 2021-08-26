@@ -110,18 +110,26 @@ class ProductoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $producto = producto::findOrFail($id);
-        $producto->visible = $request->visible;
-        $producto->estado = $request->estado;
-        $producto->tipo_producto_fk = $request->tipo_producto_fk;
-        $producto->nombre = $request->nombre;
-        $producto->fecha_fabricacion = $request->fecha_fabricacion;
-        $producto->fecha_vencimiento = $request->fecha_vencimiento;
-        $producto->precio = $request->precio;
-        $producto->cantidad = $request->cantidad;
-        $producto->descripcion = $request->descripcion;
-        if ($producto->save()) {
-            return response()->json($producto);
+        //tipo_producto_fk_nombre
+        $tipo_producto = tipo_producto::where(
+            'nombre','=',$request->tipo_producto_fk_nombre)
+            ->select('id')
+            ->get()
+            ->first();
+        if ($tipo_producto) {
+            $producto = producto::findOrFail($id);
+            $producto->visible = $request->visible;
+            $producto->estado = $request->estado;
+            $producto->tipo_producto_fk = $tipo_producto->id;
+            $producto->nombre = $request->nombre;
+            $producto->fecha_fabricacion = $request->fecha_fabricacion;
+            $producto->fecha_vencimiento = $request->fecha_vencimiento;
+            $producto->precio = $request->precio;
+            $producto->cantidad = $request->cantidad;
+            $producto->descripcion = $request->descripcion;
+            if ($producto->save()) {
+                return response()->json($producto);
+            }
         }
     }
 
