@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\cliente;
+use App\Models\cuenta_bancaria;
 use Illuminate\Http\Request;
 
 class ClienteController extends Controller
@@ -69,10 +70,25 @@ class ClienteController extends Controller
      */
     public function show($id)
     {
-        $cliente = cliente::findOrFail($id);
+        $cliente = cliente::where('id','=',$id)->select(
+            'id',
+            'rol_fk',
+            'cuenta_bancaria_fk',
+            'nombres',
+            'apellidos',
+            'correo',
+            'numero_identificacion',
+            'numero_telefono',
+            'direccion'
+        )
+        ->get()
+        ->first();
+        $cliente->cuenta_bancaria_fk = cuenta_bancaria::where('id','=',$cliente->cuenta_bancaria_fk)
+        ->get()
+        ->first();
         return response()->json($cliente);
     }
-
+    
     /**
      * Show the form for editing the specified resource.
      *
@@ -93,6 +109,13 @@ class ClienteController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (!$request->visible) {
+            $cliente = cliente::findOrFail($id);
+            $cliente->cuenta_bancaria_fk = $request->cuenta_bancaria_fk;
+            if ($cliente->save()) {
+                return response()->json($cliente);
+            }
+        }
         $cliente = cliente::findOrFail($id);
         $cliente->visible = $request->visible;
         $cliente->estado = $request->estado;
@@ -132,10 +155,7 @@ class ClienteController extends Controller
                     'id',
                     'rol_fk',
                     'nombres',
-                    'apellidos',
-                    'correo',
-                    'numero_identificacion',
-                    'cuenta_bancaria_fk'
+                    'apellidos'
                 )
                 ->get()
                 ->first());
