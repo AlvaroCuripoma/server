@@ -45,7 +45,7 @@ class VentaController extends Controller
         $venta->iva = $request->iva;
         $venta->descuento = $request->descuento;
         if ($venta->save()) {
-            return response()->json($venta);
+            return response()->json($venta->id);
         }
     }
 

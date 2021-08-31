@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\cliente;
 use App\Models\cuenta_bancaria;
 use Illuminate\Http\Request;
+use App\Mail\messageCreatUser;
+use Illuminate\Support\Facades\Mail;
 
 class ClienteController extends Controller
 {
@@ -57,6 +59,7 @@ class ClienteController extends Controller
             $cliente->numero_telefono = $request->numero_telefono;
             $cliente->direccion = $request->direccion;
             if ($cliente->save()) {
+                Mail::to($cliente->correo)->send(new messageCreatUser);
                 return response()->json(['id' => $cliente->id]);
             }
         }
