@@ -41,7 +41,7 @@ class ClienteController extends Controller
     {
         $user_exist = cliente::where('correo','=', $request->correo)
             ->orWhere('numero_identificacion',$request->numero_identificacion)
-            ->select('nombres','apellidos','correo')
+            ->select('nombres')
             ->get()
             ->first();
         if ($user_exist) {
