@@ -60,7 +60,7 @@ class ClienteController extends Controller
             $cliente->numero_telefono = $request->numero_telefono;
             $cliente->direccion = $request->direccion;
             if ($cliente->save()) {
-                Mail::to($cliente->correo)->send(new messageCreatUser);
+                // Mail::to($cliente->correo)->send(new messageCreatUser);
                 return response()->json(['id' => $cliente->id]);
             }
         }
