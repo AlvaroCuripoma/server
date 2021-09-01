@@ -40,6 +40,7 @@ class ClienteController extends Controller
     public function store(Request $request)
     {
         $user_exist = cliente::where('correo','=', $request->correo)
+            ->orWhere('numero_identificacion',$request->numero_identificacion)
             ->select('nombres','apellidos','correo')
             ->get()
             ->first();
@@ -152,18 +153,22 @@ class ClienteController extends Controller
     }
     public function login(Request $request) {
         $user = cliente::where('correo','=',$request->correo)->get()->first();
-        if ($user != null && $user->clave == $request->pass) {
-            return response()->json(cliente::where('correo','=',$request->correo)
-                ->select(
-                    'id',
-                    'rol_fk',
-                    'nombres',
-                    'apellidos'
-                )
-                ->get()
-                ->first());
+        if ($user) {
+            if ($user != null && $user->clave == $request->pass) {
+                return response()->json(cliente::where('correo','=',$request->correo)
+                    ->select(
+                        'id',
+                        'rol_fk',
+                        'nombres',
+                        'apellidos'
+                    )
+                    ->get()
+                    ->first());
+            } else {
+                return response()->json(['message_2'=>'Credenciales incorrectas']);
+            }
         } else {
-            return response()->json(['message'=>'Usuario no encontrado']);
+            return response()->json(['message_1'=>'Usuario no encontrado']);
         }
     }
 }

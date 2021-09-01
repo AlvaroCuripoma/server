@@ -16,7 +16,6 @@ class ProductoController extends Controller
     public function index()
     {
         $productos = producto::all();
-        $tipos_productos = tipo_producto::all();
         foreach ($productos as $producto) {
             $tipo_producto = tipo_producto::where(
                 'id','=',$producto->tipo_producto_fk)
@@ -78,7 +77,6 @@ class ProductoController extends Controller
     public function show($id)
     {
         $producto = producto::findOrFail($id);
-        $tipos_productos = tipo_producto::all();
 
         $tipo_producto = tipo_producto::where(
             'id','=',$producto->tipo_producto_fk)

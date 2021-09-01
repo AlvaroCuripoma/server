@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\detalle_venta;
+use App\Models\producto;
 use Illuminate\Http\Request;
 
 class DetalleVentaController extends Controller
@@ -103,5 +104,12 @@ class DetalleVentaController extends Controller
         {
             return response()->json($detalle_venta);
         }
+    }
+    public function verDetalleVentaCliente($id){
+        $detalles_venta = detalle_venta::where('venta_fk','=',$id)->get();
+        foreach ($detalles_venta as $detalle_venta) {
+            $detalle_venta->producto_fk = producto::where('id','=',$detalle_venta->producto_fk)->get()->first();
+        }
+        return response()->json($detalles_venta);
     }
 }

@@ -49,6 +49,7 @@ Route::get('/detalles_venta/show/{id}', [DetalleVentaController::class, 'show'])
 Route::post('/detalles_venta/store', [DetalleVentaController::class, 'store']);
 Route::put('/detalles_venta/update/{id}', [DetalleVentaController::class, 'update']);
 Route::delete('/detalles_venta/destroy/{id}', [DetalleVentaController::class, 'destroy']);
+Route::get('/detalles_venta/verDetalleVentaCliente/{id}', [DetalleVentaController::class, 'verDetalleVentaCliente']);
 
 // API Producto +
 Route::get('/productos', [ProductoController::class, 'index']);

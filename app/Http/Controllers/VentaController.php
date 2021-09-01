@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\venta;
+use App\Models\cliente;
+use App\Models\tipo_pago;
 use Illuminate\Http\Request;
 
 class VentaController extends Controller
@@ -14,7 +16,12 @@ class VentaController extends Controller
      */
     public function index()
     {
-        $ventas = venta::all();
+        $ventas = venta::where('visible','=','1')->orderByDesc('id')->get();
+
+        foreach ($ventas as $venta) {
+            $venta->cliente_fk = cliente::findOrFail($venta->cliente_fk);
+            $venta->tipo_pago_fk = tipo_pago::findOrFail($venta->tipo_pago_fk);
+        }
         return response()->json($ventas);
     }
 
